@@ -1,7 +1,5 @@
-<?php
-
 require_once('crest/crest.php');
-$result = CRest::call(
+$result_lids = CRest::call(
     'crm.lead.list',
     [
         'filter' => [
@@ -11,11 +9,27 @@ $result = CRest::call(
             'TITLE',
             'NAME',
             'PHONE',
-			'DATE_CREATE'
+	    'DATE_CREATE',
+	    'CONTACT_ID'
         ]
     ]
 );
-$lides = $result['result'];
+$lides = $result_lids['result'];
+$result_conts = CRest::call(
+    'crm.contact.list',
+    [
+        'filter' => [
+            '>=DATE_CREATE' => '2022-12-01T00:00:00'
+        ],
+        'select' => [
+	    'ID',
+            'TITLE',
+            'NAME',
+            'PHONE',
+        ]
+    ]
+);
+$contacts_lid = $result_conts['result'];
 
 function phone_format($phone) {
 	$phone = trim($phone);
